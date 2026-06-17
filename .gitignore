@@ -1,0 +1,25 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Env
+.env
+.env.*
+
+# Docs output
+docs/benchmarks/
+docs/results/
+
+# Docker
+docker-data/
+
+# Temporary
+tmp/
+temp/
