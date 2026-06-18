@@ -30,16 +30,14 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
-    await this.prisma.auth.create({
+    const auth = await this.prisma.auth.create({
       data: {
         email: dto.email,
         passwordHash,
       },
     });
 
-    return {
-      message: 'User created',
-    };
+    return auth;
   }
 
   async login(dto: LoginDto) {
