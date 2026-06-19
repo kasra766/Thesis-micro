@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -52,5 +53,39 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  async update(id: string, dto: UpdateProductDto) {
+    const product = await this.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return this.prisma.product.update({
+      where: {
+        id,
+      },
+
+      data: dto,
+    });
+  }
+
+  async remove(id: string) {
+    const product = await this.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    await this.prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      message: 'Product deleted',
+    };
   }
 }
