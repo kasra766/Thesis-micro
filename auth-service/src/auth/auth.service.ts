@@ -55,6 +55,7 @@ export class AuthService {
 
     const payload = {
       sub: auth.id,
+      userId: auth?.userId || '',
       email: auth.email,
       role: auth.role,
     };
@@ -62,5 +63,17 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async linkUser(authId: string, userId: string) {
+    return this.prisma.auth.update({
+      where: {
+        id: authId,
+      },
+
+      data: {
+        userId,
+      },
+    });
   }
 }

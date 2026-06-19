@@ -7,25 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
-
-model Auth {
+model Order {
   id String @id @default(uuid())
 
-  email String @unique
+  userId String
 
-  passwordHash String
+  productId String
 
-  role Role @default(USER)
+  quantity Int
 
-  userId String? @unique
-
-  isActive Boolean @default(true)
+  totalPrice Decimal
 
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+  @@index([createdAt])
 }
