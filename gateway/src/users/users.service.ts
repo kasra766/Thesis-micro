@@ -8,14 +8,14 @@ export class UsersService {
 
   async create(body: any) {
     const response = await firstValueFrom(
-      this.http.post('http://localhost:3002/users', body),
+      this.http.post(`${process.env.USER_SERVICE_URL}/users`, body),
     );
 
     return response.data;
   }
 
   async findAll(page?: number, limit?: number) {
-    const url = new URL('http://localhost:3002/users');
+    const url = new URL(`${process.env.USER_SERVICE_URL}/users`);
 
     if (page) url.searchParams.append('page', page.toString());
     if (limit) url.searchParams.append('limit', limit.toString());
@@ -27,7 +27,7 @@ export class UsersService {
 
   async findOne(id: string) {
     const response = await firstValueFrom(
-      this.http.get(`http://localhost:3002/users/${id}`),
+      this.http.get(`${process.env.USER_SERVICE_URL}/users/${id}`),
     );
 
     return response.data;
@@ -35,7 +35,7 @@ export class UsersService {
 
   async update(id: string, body: any) {
     const response = await firstValueFrom(
-      this.http.patch(`http://localhost:3002/users/${id}`, body),
+      this.http.patch(`${process.env.USER_SERVICE_URL}/users/${id}`, body),
     );
 
     return response.data;
@@ -43,7 +43,7 @@ export class UsersService {
 
   async remove(id: string) {
     const response = await firstValueFrom(
-      this.http.delete(`http://localhost:3002/users/${id}`),
+      this.http.delete(`${process.env.USER_SERVICE_URL}/users/${id}`),
     );
 
     return response.data;

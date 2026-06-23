@@ -1,16 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+
+    @Inject('RABBITMQ_SERVICE')
+    private client: ClientProxy,
+  ) {}
 
   async create(dto: CreateOrderDto) {
-    return this.prisma.order.create({
+    const order = await this.prisma.order.create({
       data: dto,
     });
+
+    this.client.emit('order_created', {
+      orderId: order.id,
+      userId: order.userId,
+      productId: order.productId,
+      quantity: order.quantity,
+      totalPrice: order.totalPrice,
+    });
+
+    return order;
   }
 
   async findAll() {

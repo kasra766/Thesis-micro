@@ -1,21 +1,22 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
+import { CreateProductDto } from './dto/create.dto';
 
 @Injectable()
 export class ProductsService {
   constructor(private http: HttpService) {}
 
-  async create(body: any) {
+  async create(dto: CreateProductDto) {
     const response = await firstValueFrom(
-      this.http.post('http://localhost:3003/products', body),
+      this.http.post(`${process.env.PRODUCT_SERVICE_URL}/products`, dto),
     );
 
     return response.data;
   }
 
   async findAll(page?: number, limit?: number, search?: string) {
-    const url = new URL('http://localhost:3003/products');
+    const url = new URL(`${process.env.PRODUCT_SERVICE_URL}/products`);
     if (page) url.searchParams.append('page', page.toString());
     if (limit) url.searchParams.append('limit', limit.toString());
     if (search) url.searchParams.append('search', search);
@@ -27,7 +28,7 @@ export class ProductsService {
 
   async findOne(id: string) {
     const response = await firstValueFrom(
-      this.http.get(`http://localhost:3003/products/${id}`),
+      this.http.get(`${process.env.PRODUCT_SERVICE_URL}/products/${id}`),
     );
 
     return response.data;
@@ -35,7 +36,10 @@ export class ProductsService {
 
   async update(id: string, body: any) {
     const response = await firstValueFrom(
-      this.http.patch(`http://localhost:3003/products/${id}`, body),
+      this.http.patch(
+        `${process.env.PRODUCT_SERVICE_URL}/products/${id}`,
+        body,
+      ),
     );
 
     return response.data;
@@ -43,7 +47,7 @@ export class ProductsService {
 
   async remove(id: string) {
     const response = await firstValueFrom(
-      this.http.delete(`http://localhost:3003/products/${id}`),
+      this.http.delete(`${process.env.PRODUCT_SERVICE_URL}/products/${id}`),
     );
 
     return response.data;

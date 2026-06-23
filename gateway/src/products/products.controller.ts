@@ -15,16 +15,20 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
 import { Roles } from '../auth/decorators/roles.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CreateProductDto } from './dto/create.dto';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @ApiBearerAuth()
   @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  create(@Body() body: any) {
-    return this.productsService.create(body);
+  create(@Body() dto: CreateProductDto) {
+    return this.productsService.create(dto);
   }
 
   @Get()

@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
@@ -11,12 +12,16 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+
+    @Inject('RABBITMQ_SERVICE')
+    private client: ClientProxy,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -35,6 +40,12 @@ export class AuthService {
         email: dto.email,
         passwordHash,
       },
+    });
+
+    this.client.emit('user_registered', {
+      authId: auth.id,
+      email: auth.email,
+      name: dto.name,
     });
 
     return auth;

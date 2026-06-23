@@ -9,7 +9,9 @@ export class OrdersService {
 
   async create(userId: string, dto: CreateOrderDto) {
     const productResponse = await firstValueFrom(
-      this.http.get(`http://localhost:3003/products/${dto.productId}`),
+      this.http.get(
+        `${process.env.PRODUCT_SERVICE_URL}/products/${dto.productId}`,
+      ),
     );
 
     const product = productResponse.data;
@@ -17,7 +19,7 @@ export class OrdersService {
     const totalPrice = Number(product.price) * dto.quantity;
 
     const orderResponse = await firstValueFrom(
-      this.http.post('http://localhost:3004/orders', {
+      this.http.post(`${process.env.ORDER_SERVICE_URL}/orders`, {
         userId,
 
         productId: dto.productId,
@@ -32,7 +34,7 @@ export class OrdersService {
   }
 
   async findAll(page?: number, limit?: number, search?: string) {
-    const url = new URL('http://localhost:3004/orders');
+    const url = new URL(`${process.env.ORDER_SERVICE_URL}/orders`);
     if (page) url.searchParams.append('page', page.toString());
     if (limit) url.searchParams.append('limit', limit.toString());
     if (search) url.searchParams.append('search', search);
@@ -44,7 +46,7 @@ export class OrdersService {
 
   async findOne(id: string) {
     const response = await firstValueFrom(
-      this.http.get(`http://localhost:3004/orders/${id}`),
+      this.http.get(`${process.env.ORDER_SERVICE_URL}/orders/${id}`),
     );
 
     return response.data;
@@ -52,7 +54,9 @@ export class OrdersService {
 
   async findMyOrders(userId: string) {
     const response = await firstValueFrom(
-      this.http.get(`http://localhost:3004/orders/internal/user/${userId}`),
+      this.http.get(
+        `${process.env.ORDER_SERVICE_URL}/orders/internal/user/${userId}`,
+      ),
     );
 
     return response.data;
@@ -61,7 +65,7 @@ export class OrdersService {
   async findMyOrder(userId: string, orderId: string) {
     const response = await firstValueFrom(
       this.http.get(
-        `http://localhost:3004/orders/internal/user/${userId}/${orderId}`,
+        `${process.env.ORDER_SERVICE_URL}/orders/internal/user/${userId}/${orderId}`,
       ),
     );
 
@@ -70,7 +74,7 @@ export class OrdersService {
 
   async update(id: string, body: any) {
     const response = await firstValueFrom(
-      this.http.patch(`http://localhost:3004/orders/${id}`, body),
+      this.http.patch(`${process.env.ORDER_SERVICE_URL}/orders/${id}`, body),
     );
 
     return response.data;
@@ -78,7 +82,7 @@ export class OrdersService {
 
   async remove(id: string) {
     const response = await firstValueFrom(
-      this.http.delete(`http://localhost:3004/orders/${id}`),
+      this.http.delete(`${process.env.ORDER_SERVICE_URL}/orders/${id}`),
     );
 
     return response.data;

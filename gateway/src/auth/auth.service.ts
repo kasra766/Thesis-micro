@@ -15,46 +15,57 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     const authResponse = await firstValueFrom(
-      this.http.post('http://localhost:3001/auth/register', {
+      this.http.post(`${process.env.AUTH_SERVICE_URL}/auth/register`, {
+        name: dto.name,
         email: dto.email,
         password: dto.password,
       }),
     );
 
-    const userResponse = await firstValueFrom(
-      this.http.post('http://localhost:3002/users', {
-        name: dto.name,
-        email: dto.email,
-      }),
-    );
+    // const userResponse = await firstValueFrom(
+    //   this.http.post(`${process.env.USER_SERVICE_URL}/users`, {
+    //     name: dto.name,
+    //     email: dto.email,
+    //   }),
+    // );
 
-    await firstValueFrom(
-      this.http.post('http://localhost:3001/auth/link-user', {
-        authId: authResponse.data.id,
-        userId: userResponse.data.id,
-      }),
-    );
+    // await firstValueFrom(
+    //   this.http.post(`${process.env.AUTH_SERVICE_URL}/auth/link-user`, {
+    //     authId: authResponse.data.id,
+    //     userId: userResponse.data.id,
+    //   }),
+    // );
 
-    const payload = {
-      sub: authResponse.data.id,
-      userId: userResponse.data.id,
-      email: userResponse.data.email,
-      role: userResponse.data.role,
-    };
+    // const payload = {
+    //   sub: authResponse.data.id,
+    //   userId: authResponse.data.userId,
+    //   email: authResponse.data.email,
+    //   role: authResponse.data.role,
+    // };
+
+    // return {
+    //   auth: {
+    //     ...authResponse.data,
+    //     userId: userResponse.data.id,
+    //   },
+    //   user: userResponse.data,
+    //   access_token: this.jwtService.sign(payload),
+    // };
+
+    // const payload = {
+    //   sub: authResponse.data.id,
+    //   email: dto.email,
+    // };
 
     return {
-      auth: {
-        ...authResponse.data,
-        userId: userResponse.data.id,
-      },
-      user: userResponse.data,
-      access_token: this.jwtService.sign(payload),
+      auth: authResponse.data,
+      // access_token: this.jwtService.sign(payload),
     };
   }
 
   async login(body: any) {
     const response = await firstValueFrom(
-      this.http.post('http://localhost:3001/auth/login', body),
+      this.http.post(`${process.env.AUTH_SERVICE_URL}/auth/login`, body),
     );
 
     return response.data;
