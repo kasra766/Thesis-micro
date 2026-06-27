@@ -85,24 +85,17 @@ export class OrdersService {
   }
 
   async findByUserAndId(userId: string, orderId: string) {
-    const order = await this.prisma.order.findFirst({
+    await this.findOne(orderId);
+    return this.prisma.order.findUnique({
       where: {
         id: orderId,
         userId,
       },
     });
-
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
-
-    return order;
   }
 
   async update(id: string, dto: UpdateOrderDto) {
-    const order = await this.findOne(id);
-
-    if (!order) throw new NotFoundException('Order not found');
+    await this.findOne(id);
 
     return this.prisma.order.update({
       where: {
@@ -113,9 +106,7 @@ export class OrdersService {
   }
 
   async remove(id: string) {
-    const order = await this.findOne(id);
-
-    if (!order) throw new NotFoundException('Order not found');
+    await this.findOne(id);
 
     await this.prisma.order.delete({
       where: {

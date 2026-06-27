@@ -82,11 +82,7 @@ export class ProductsService {
   }
 
   async update(id: string, dto: UpdateProductDto) {
-    const product = await this.findOne(id);
-
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
+    await this.findOne(id);
 
     return this.prisma.product.update({
       where: {
@@ -98,11 +94,7 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const product = await this.findOne(id);
-
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
+    await this.findOne(id);
 
     await this.prisma.product.delete({
       where: {

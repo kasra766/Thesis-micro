@@ -18,8 +18,8 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  @Post('link-user')
-  linkUser(@Body() dto: LinkUserDto) {
-    return this.authService.linkUser(dto.authId, dto.userId);
-  }
+  // @Post('link-user')
+  // linkUser(@Body() dto: LinkUserDto) {
+  //   return this.authService.linkUser(dto.authId, dto.userId);
+  // }
 }

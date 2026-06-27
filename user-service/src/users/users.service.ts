@@ -59,11 +59,7 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const user = await this.findOne(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    await this.findOne(id);
 
     await this.prisma.user.delete({
       where: {

@@ -48,7 +48,9 @@ export class AuthService {
       name: dto.name,
     });
 
-    return auth;
+    return {
+      message: 'User created',
+    };
   }
 
   async login(dto: LoginDto) {

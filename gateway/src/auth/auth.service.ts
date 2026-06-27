@@ -57,10 +57,12 @@ export class AuthService {
     //   email: dto.email,
     // };
 
-    return {
-      auth: authResponse.data,
-      // access_token: this.jwtService.sign(payload),
-    };
+    // return {
+    //   auth: authResponse.data,
+    //   // access_token: this.jwtService.sign(payload),
+    // };
+
+    return authResponse.data;
   }
 
   async login(body: any) {
