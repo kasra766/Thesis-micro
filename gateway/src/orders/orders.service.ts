@@ -33,11 +33,10 @@ export class OrdersService {
     return orderResponse.data;
   }
 
-  async findAll(page?: number, limit?: number, search?: string) {
+  async findAll(page?: number, limit?: number) {
     const url = new URL(`${process.env.ORDER_SERVICE_URL}/orders`);
     if (page) url.searchParams.append('page', page.toString());
     if (limit) url.searchParams.append('limit', limit.toString());
-    if (search) url.searchParams.append('search', search);
 
     const response = await firstValueFrom(this.http.get(url.toString()));
 
@@ -52,12 +51,14 @@ export class OrdersService {
     return response.data;
   }
 
-  async findMyOrders(userId: string) {
-    const response = await firstValueFrom(
-      this.http.get(
-        `${process.env.ORDER_SERVICE_URL}/orders/internal/user/${userId}`,
-      ),
+  async findMyOrders(userId: string, page?: number, limit?: number) {
+    const url = new URL(
+      `${process.env.ORDER_SERVICE_URL}/orders/internal/user/${userId}`,
     );
+    if (page) url.searchParams.append('page', page.toString());
+    if (limit) url.searchParams.append('limit', limit.toString());
+
+    const response = await firstValueFrom(this.http.get(url.toString()));
 
     return response.data;
   }

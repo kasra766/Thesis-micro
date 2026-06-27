@@ -29,12 +29,22 @@ export class OrdersService {
     return order;
   }
 
-  async findAll() {
-    return this.prisma.order.findMany({
+  async findAll(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const count = await this.prisma.order.count();
+    const orders = await this.prisma.order.findMany({
+      skip,
+      take: limit,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return {
+      count,
+      data: orders,
+    };
   }
 
   async findOne(id: string) {
@@ -49,16 +59,29 @@ export class OrdersService {
     return order;
   }
 
-  async findByUser(userId: string) {
-    return this.prisma.order.findMany({
+  async findByUser(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const count = await this.prisma.order.count({
       where: {
         userId,
       },
-
+    });
+    const orders = await this.prisma.order.findMany({
+      where: {
+        userId,
+      },
+      skip,
+      take: limit,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return {
+      count,
+      data: orders,
+    };
   }
 
   async findByUserAndId(userId: string, orderId: string) {

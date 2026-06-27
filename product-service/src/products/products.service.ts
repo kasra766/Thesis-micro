@@ -16,7 +16,28 @@ export class ProductsService {
   async findAll(page = 1, limit = 20, search?: string) {
     const skip = (page - 1) * limit;
 
-    return this.prisma.product.findMany({
+    const count = await this.prisma.product.count({
+      where: search
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          }
+        : {},
+    });
+
+    const products = await this.prisma.product.findMany({
       where: search
         ? {
             OR: [
@@ -41,6 +62,11 @@ export class ProductsService {
         createdAt: 'desc',
       },
     });
+
+    return {
+      count,
+      data: products,
+    };
   }
 
   async findOne(id: string) {

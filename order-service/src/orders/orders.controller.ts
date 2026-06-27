@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -21,8 +22,8 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@Query('page') page = '1', @Query('limit') limit = '10') {
+    return this.ordersService.findAll(Number(page), Number(limit));
   }
 
   @Get(':id')
@@ -31,8 +32,12 @@ export class OrdersController {
   }
 
   @Get('internal/user/:userId')
-  findByUser(@Param('userId') userId: string) {
-    return this.ordersService.findByUser(userId);
+  findByUser(
+    @Param('userId') userId: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ) {
+    return this.ordersService.findByUser(userId, Number(page), Number(limit));
   }
 
   @Get('internal/user/:userId/:orderId')

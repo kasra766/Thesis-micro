@@ -18,13 +18,19 @@ export class UsersService {
   async findAll(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 
-    return this.prisma.user.findMany({
+    const count = await this.prisma.user.count();
+    const users = await this.prisma.user.findMany({
       skip,
       take: limit,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return {
+      count,
+      data: users,
+    };
   }
 
   async findOne(id: string) {

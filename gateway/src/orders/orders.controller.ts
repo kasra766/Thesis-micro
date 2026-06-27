@@ -34,18 +34,22 @@ export class OrdersController {
   @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  findAll(
-    @Query('page') page = '1',
-    @Query('limit') limit = '20',
-    @Query('search') search?: string,
-  ) {
-    return this.ordersService.findAll(Number(page), Number(limit), search);
+  findAll(@Query('page') page = '1', @Query('limit') limit = '20') {
+    return this.ordersService.findAll(Number(page), Number(limit));
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('my')
-  findMyOrders(@Req() req) {
-    return this.ordersService.findMyOrders(req.user.userId);
+  findMyOrders(
+    @Req() req,
+    @Query('page') page = '1',
+    @Query('limit') limit = '20',
+  ) {
+    return this.ordersService.findMyOrders(
+      req.user.userId,
+      Number(page),
+      Number(limit),
+    );
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
