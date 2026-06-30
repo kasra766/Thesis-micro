@@ -1,8 +1,9 @@
+import { check } from "k6";
 import http from "k6/http";
 
 export const options = {
-vus: 20,
-duration: '60s',
+  vus: __ENV.VUS ? Number(__ENV.VUS) : 10,
+  duration: __ENV.DURATION || '5m',
 };
 
 export default function () {
@@ -20,4 +21,8 @@ export default function () {
   );
 
 
+  check(res, {
+    'login successful': (r) => r.status === 201,
+    'response time < 500ms': (r) => r.timings.duration < 500,
+  });
 }
